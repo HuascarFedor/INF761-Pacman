@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public enum TileType { Wall, Empty, Pellet, PowerPellet, GhostDoor, GhostHouse };
 
@@ -63,5 +64,18 @@ public class MazeBuilder : MonoBehaviour
                 }
             }
         }
+    }
+
+    public static bool IsWalkable(Vector2Int g, bool isGhost = false, bool allowGhostDoor = false)
+    {
+        if(g.x < 0 || g.x >= GridConstants.COLS || g.y < 0 || g.y >= GridConstants.ROWS)
+        {
+            // Tunel
+            return true;
+        }
+        TileType t = Tiles[g.x, g.y];
+        if(t == TileType.Wall) return false;
+        if(t == TileType.GhostDoor) return isGhost && allowGhostDoor;
+        return true;
     }
 }
